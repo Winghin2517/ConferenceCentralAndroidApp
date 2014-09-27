@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'com.android.tools.build:gradle:0.12.+'
     }
 }
 apply plugin: 'android'
@@ -18,7 +18,7 @@ repositories {
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.0"
+    buildToolsVersion "19.1.0"
 
     defaultConfig {
         minSdkVersion 9
@@ -67,4 +67,5 @@ dependencies {
     compile(group: 'com.google.guava', name: 'guava', version: '14.0.+')
     //compile files('libs/conference-v1-1.18.0-rc-SNAPSHOT.jar')
     compile files('libs/conference-v1-1.18.0-rc-SNAPSHOT.jar')
+    compile files('libs/conference-v1-1.19.0-SNAPSHOT.jar')
 }
