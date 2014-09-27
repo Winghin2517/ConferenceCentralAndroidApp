@@ -55,7 +55,7 @@ public class MainActivity extends ActionBarActivity {
     private AuthorizationCheckTask mAuthTask; //inner class
     private String mEmailAccount;
 
-    private ConferenceListFragment mConferenceListFragment;
+    private ConferenceListFragment mConferenceListFragment; //outer class
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
