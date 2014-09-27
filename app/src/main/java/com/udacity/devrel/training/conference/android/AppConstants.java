@@ -46,7 +46,7 @@ public class AppConstants {
      *
      * @see <a href="https://developers.google.com/console">https://developers.google.com/console</a>
      */
-    public static final String WEB_CLIENT_ID = "768602300988-9k1dkji6r7d9bl1mvolc04ddua74dlp4.apps.googleusercontent.com";
+    public static final String WEB_CLIENT_ID = "768602300988-svangdhsm0se5vcgh35bkvbmnog4r9d9.apps.googleusercontent.com";
     /**
      * The audience is defined by the web client id, not the Android client id.
      */
