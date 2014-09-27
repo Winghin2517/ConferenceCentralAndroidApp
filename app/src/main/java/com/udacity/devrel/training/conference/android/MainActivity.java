@@ -52,7 +52,7 @@ public class MainActivity extends ActionBarActivity {
      */
     private static final int ACTIVITY_RESULT_FROM_ACCOUNT_SELECTION = 2222;
 
-    private AuthorizationCheckTask mAuthTask;
+    private AuthorizationCheckTask mAuthTask; //inner class
     private String mEmailAccount;
 
     private ConferenceListFragment mConferenceListFragment;
