@@ -9,6 +9,12 @@
         app:showAsAction="always"/>
 
     <item
+        android:id="@+id/action_create"
+        android:title="@string/create"
+        android:icon="@drawable/ic_action_edit"
+        app:showAsAction="always"/>
+
+    <item
         android:id="@+id/action_clear_account"
         android:title="@string/action_clear_account"
         app:showAsAction="never"/>
