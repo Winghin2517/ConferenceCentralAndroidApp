@@ -128,14 +128,13 @@ public class MainActivity extends ActionBarActivity {
                 break;
             case R.id.action_create:
                 Intent startCreate = new Intent(this, CreateActivity.class);
-                startActivityForResult(startCreate, REQUEST_CODE_CREATE);
+                startActivity(startCreate);
+                break;
         }
         return true;
     }
 
-    private void OnActivityResult(int requestCode, int resultCode, Intent data){
 
-    }
     /*
      * Selects an account for talking to Google Play services. If there is more than one account on
      * the device, it allows user to choose one.

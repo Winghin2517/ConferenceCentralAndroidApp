@@ -5,14 +5,15 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="12dp"
-    android:id="@+id/">
+    android:id="@+id/create_listview">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        >
 
         <TextView
             android:id="@+id/conf_name"
@@ -20,7 +21,7 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:ellipsize="end"
-            tools:text="text_name"
+            tools:text="conference_name"
             android:textColor="#333333"
             android:textSize="14sp"
             />
@@ -31,7 +32,7 @@
             android:layout_below="@+id/conf_name"
             android:ellipsize="end"
             android:maxLines="1"
-            tools:text="text_url"
+            tools:text="conference_description"
             android:textColor="#1ecbe1"
             android:textSize="12sp"
             />
