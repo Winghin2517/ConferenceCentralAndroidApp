@@ -14,6 +14,7 @@
         android:textColor="#666666"
         android:padding="8dp"
         android:gravity="center"
+        android:background="#e82e39"
         tools:text="Create Conference"/>    <!--all this code has been extracted from the style.xml of Wordpress Best to stick it into Styles.xml when I have developed this a bit more-->
 
     <View

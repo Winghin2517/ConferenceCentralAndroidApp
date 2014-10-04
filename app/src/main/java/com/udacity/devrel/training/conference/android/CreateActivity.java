@@ -41,6 +41,7 @@ public class CreateActivity extends Activity {
         setContentView(R.layout.conference_create);
 
         mCreateButton = (TextView) findViewById(R.id.header);
+        mCreateButton.setText("Create Conference");
         mCreateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,7 +84,7 @@ public class CreateActivity extends Activity {
         @Override
         protected void onPostExecute(Boolean result) {
             if (result == true) {
-                Toast.makeText(getApplicationContext(),R.string.toast_no_google_accounts_registered,
+                Toast.makeText(getApplicationContext(),"Conference Created",
                         Toast.LENGTH_LONG).show();
             }
         }
@@ -129,5 +130,12 @@ public class CreateActivity extends Activity {
         outstate.putInt(KEY_MAX, mMax);
     }
 
-
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) { //called just before onStart in the activity lifecycle
+        super.onRestoreInstanceState(savedInstanceState); //apparently this saves the window state
+        mName = savedInstanceState.getString(KEY_NAME);
+        mDesc = savedInstanceState.getString(KEY_DESC);
+        mCity = savedInstanceState.getString(KEY_CITY);
+        mMax = savedInstanceState.getInt(KEY_MAX);
+    }
 }
