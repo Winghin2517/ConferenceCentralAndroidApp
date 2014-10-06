@@ -55,7 +55,7 @@ public class MainActivity extends ActionBarActivity {
     private AuthorizationCheckTask mAuthTask; //inner class
     private String mEmailAccount;
 
-    private ConferenceListFragment mConferenceListFragment; //outer class
+    private ConferenceListFragment mConferenceListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +128,8 @@ public class MainActivity extends ActionBarActivity {
                 break;
             case R.id.action_create:
                 Intent startCreate = new Intent(this, CreateActivity.class);
-                startActivity(startCreate);
+                startActivityForResult(startCreate, REQUEST_CODE_CREATE);
+               // startActivity(startCreate);
                 break;
         }
         return true;
@@ -170,9 +171,15 @@ public class MainActivity extends ActionBarActivity {
             // This path indicates the account selection activity resulted in the user selecting a
             // Google account and clicking OK.
             mEmailAccount = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-        } else {
-            finish();
-        }
+        } else if  (requestCode ==  REQUEST_CODE_CREATE && requestCode == RESULT_OK) {
+            mConferenceListFragment.reload();
+        } else if (requestCode == REQUEST_CODE_CREATE) {
+            //do nothing - but don't finish the activity
+        }  else {
+                finish();
+           }
+
+
     }
 
     /*
