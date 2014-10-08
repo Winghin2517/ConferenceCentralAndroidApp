@@ -68,15 +68,32 @@
 
     </ImageView>
 
-    <Button
-        android:id="@+id/buttonLoadPicture"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:text="Load Picture"
-        android:layout_gravity="center">
+        android:orientation="horizontal">
 
-    </Button>
+        <Button
+            android:id="@+id/buttonLoadPicture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Load Picture"
+            android:layout_gravity="center">
+
+        </Button>
+
+        <Button
+            android:id="@+id/buttonUploadPicture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="UpLoad Picture"
+            android:layout_gravity="center">
+        </Button>
+
+        </LinearLayout>
+
 
                                        <!--Listview to be removed
     <ListView

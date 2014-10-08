@@ -21,6 +21,14 @@ import com.google.api.client.util.DateTime;
 import com.udacity.devrel.training.conference.android.utils.ConferenceException;
 import com.udacity.devrel.training.conference.android.utils.ConferenceUtils;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.entity.mime.content.FileBody;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +44,7 @@ public class CreateActivity extends Activity {
     String mCity, mDesc, mName = null;
     int mMax = 0;
     Date mStartDate, mEndDate;
+    private String picturePath;
 
     private final static String KEY_CITY = "city";
     private final static String KEY_NAME = "name";
@@ -72,6 +81,27 @@ public class CreateActivity extends Activity {
                 startActivityForResult(i, RESULT_LOAD_IMAGE);
             }
         });
+        Button buttonUpLoadImage = (Button) findViewById(R.id.buttonUploadPicture);
+        buttonUpLoadImage.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                HttpClient httpclient = new DefaultHttpClient();
+                HttpPost httppost = new HttpPost(uploadUrlReturnedFromStep2);
+
+                FileBody fileBody  = new FileBody(new File(picturePath));
+                MultipartEntity reqEntity = new MultipartEntity();
+
+                reqEntity.addPart("file", fileBody);
+
+                httppost.setEntity(reqEntity);
+                HttpResponse response = httpclient.execute(httppost);
+
+            }
+        });
+
+
     }
 
     @Override
@@ -87,7 +117,7 @@ public class CreateActivity extends Activity {
             cursor.moveToFirst();
 
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
+            picturePath = cursor.getString(columnIndex);
             cursor.close();
 
             ImageView imageView = (ImageView) findViewById(R.id.imgView);
