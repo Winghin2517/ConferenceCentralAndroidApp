@@ -1,6 +1,7 @@
 package com.udacity.devrel.training.conference.android;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,8 @@ import android.widget.Toast;
 import com.appspot.booming_order_708.conference.model.Conference;
 import com.appspot.booming_order_708.conference.model.ConferenceForm;
 import com.google.api.client.util.DateTime;
+import com.google.gson.Gson;
+import com.udacity.devrel.training.conference.android.utils.Blobs;
 import com.udacity.devrel.training.conference.android.utils.ConferenceException;
 import com.udacity.devrel.training.conference.android.utils.ConferenceUtils;
 
@@ -27,6 +30,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.util.EntityUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,6 +49,7 @@ public class CreateActivity extends Activity {
     int mMax = 0;
     Date mStartDate, mEndDate;
     private String picturePath;
+    private Context mContext;
 
     private final static String KEY_CITY = "city";
     private final static String KEY_NAME = "name";
@@ -57,7 +62,7 @@ public class CreateActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.conference_create);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
+        mContext = this;
         mCreateButton = (TextView) findViewById(R.id.header);
         mCreateButton.setText("Create Conference");
         mCreateButton.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +101,21 @@ public class CreateActivity extends Activity {
                 reqEntity.addPart("file", fileBody);
 
                 httppost.setEntity(reqEntity);
-                HttpResponse response = httpclient.execute(httppost);
+
+                HttpResponse httpResponse = null;
+                String response = null;
+                try {
+                    httpResponse = httpclient.execute(httppost);
+                    response = EntityUtils.toString(httpResponse.getEntity());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Gson gson = new Gson();
+                Blobs blobObj = gson.fromJson(response, Blobs.class);
+                Intent intent = new Intent(mContext, DownloadActivity.class);
+                intent.putExtra("blobObject", blobObj);
+                startActivity(intent);
 
             }
         });
@@ -147,6 +166,7 @@ public class CreateActivity extends Activity {
                     setMaxAttendees(mMax);
             try {
                 ConferenceUtils.createConference(conferenceForm);
+
             } catch(IOException e) {
 
             } catch (ConferenceException e) {
