@@ -23,11 +23,13 @@ public class DownloadActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState){
-        ImageView buttonUpLoadImage = (ImageView) findViewById(R.id.downloadImgView);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.download_picture);
+        ImageView UpLoadImage = (ImageView) findViewById(R.id.downloadImgView);
         Intent intent = getIntent();
         mBlobs = (Blobs) intent.getSerializableExtra("blobObject");
 
-        URL url = null;
+        URL url;
         Bitmap bmp = null;
         try {
             url = new URL(mBlobs.getServingUrl());
@@ -38,7 +40,7 @@ public class DownloadActivity extends Activity {
             e.printStackTrace();
         }
 
-        buttonUpLoadImage.setImageBitmap(bmp);
+        UpLoadImage.setImageBitmap(bmp);
 
 
     }

@@ -8,6 +8,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.appspot.booming_order_708.conference.model.Conference;
 import com.appspot.booming_order_708.conference.model.ConferenceForm;
 import com.google.api.client.util.DateTime;
 import com.google.gson.Gson;
@@ -25,6 +26,7 @@ import com.udacity.devrel.training.conference.android.utils.ConferenceException;
 import com.udacity.devrel.training.conference.android.utils.ConferenceUtils;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
@@ -50,6 +52,15 @@ public class CreateActivity extends Activity {
     Date mStartDate, mEndDate;
     private String picturePath;
     private Context mContext;
+    String mServingUrl;
+    HttpResponse httpResponse;
+    HttpClient httpclient;
+    HttpPost httppost;
+    String response = null;
+
+    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+
 
     private final static String KEY_CITY = "city";
     private final static String KEY_NAME = "name";
@@ -62,6 +73,9 @@ public class CreateActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.conference_create);
         getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        StrictMode.setThreadPolicy(policy);
+
         mContext = this;
         mCreateButton = (TextView) findViewById(R.id.header);
         mCreateButton.setText("Create Conference");
@@ -84,6 +98,7 @@ public class CreateActivity extends Activity {
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
                 startActivityForResult(i, RESULT_LOAD_IMAGE);
+                new getServingUrlAsyncTask().execute();
             }
         });
         Button buttonUpLoadImage = (Button) findViewById(R.id.buttonUploadPicture);
@@ -92,30 +107,42 @@ public class CreateActivity extends Activity {
             @Override
             public void onClick(View view) {
 
-                HttpClient httpclient = new DefaultHttpClient();
-                HttpPost httppost = new HttpPost(uploadUrlReturnedFromStep2);
+                httpclient = new DefaultHttpClient();
 
-                FileBody fileBody  = new FileBody(new File(picturePath));
-                MultipartEntity reqEntity = new MultipartEntity();
+                if (mServingUrl != null) {
 
-                reqEntity.addPart("file", fileBody);
+                    httppost = new HttpPost(mServingUrl);
 
-                httppost.setEntity(reqEntity);
+                    FileBody fileBody = new FileBody(new File(picturePath));
 
-                HttpResponse httpResponse = null;
-                String response = null;
-                try {
-                    httpResponse = httpclient.execute(httppost);
-                    response = EntityUtils.toString(httpResponse.getEntity());
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    MultipartEntity reqEntity = new MultipartEntity();
+
+
+                    reqEntity.addPart("file", fileBody);
+
+                    httppost.setEntity(reqEntity);
+                    //new downloadAsyncTask().execute();
+
+                    try {
+                        httpResponse = httpclient.execute(httppost);
+                        response = EntityUtils.toString(httpResponse.getEntity());
+                    } catch (ClientProtocolException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    Gson gson = new Gson();
+                    Blobs blobObj = gson.fromJson(response, Blobs.class);
+                    Intent intent = new Intent(mContext, DownloadActivity.class);
+                    intent.putExtra("blobObject", blobObj);
+                    startActivity(intent);
                 }
-
-                Gson gson = new Gson();
-                Blobs blobObj = gson.fromJson(response, Blobs.class);
-                Intent intent = new Intent(mContext, DownloadActivity.class);
-                intent.putExtra("blobObject", blobObj);
-                startActivity(intent);
+                else
+                {Toast.makeText(getApplicationContext(),"Serving URL = null. Image can't be downloaded",
+                        Toast.LENGTH_LONG).show();
+                }
 
             }
         });
@@ -145,8 +172,65 @@ public class CreateActivity extends Activity {
         }
     }
 
-    protected class createConfAsyncTask extends AsyncTask<Void, Void, Boolean> {
+   /** protected class downloadAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                httpResponse = httpclient.execute(httppost);
+                response = EntityUtils.toString(httpResponse.getEntity());
+                Thread.sleep(1000);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            do {} while (result == null);
+            if (result == true) {
+                Toast.makeText(getApplicationContext(),"Downloaded",
+                        Toast.LENGTH_LONG).show();
+            }
+            if (result == false) {
+                Toast.makeText(getApplicationContext(),"Failed downloading",
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+
+**/
+    protected class getServingUrlAsyncTask extends AsyncTask<Void, Void, String> {
+
+        @Override
+        protected String doInBackground(Void...voids) {
+            try {
+                mServingUrl = ConferenceUtils.getServingUrl().getBlobUrl();
+                return mServingUrl;
+            } catch (ConferenceException e) {
+                e.printStackTrace();
+                return null;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (result == null) {
+                //log results...
+            }
+        }
+
+    }
+
+    protected class createConfAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
         protected Boolean doInBackground(Void... voids) {

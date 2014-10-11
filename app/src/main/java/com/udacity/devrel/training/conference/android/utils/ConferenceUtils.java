@@ -15,6 +15,7 @@
 
 package com.udacity.devrel.training.conference.android.utils;
 
+import com.appspot.booming_order_708.conference.model.BlobUrl;
 import com.appspot.booming_order_708.conference.model.ConferenceForm;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.udacity.devrel.training.conference.android.AppConstants;
@@ -130,6 +131,8 @@ public class ConferenceUtils {
         return result.getResult();
     }
 
+    /** creates a conference from the android app (custom code) **/
+
     public static Conference createConference(ConferenceForm conferenceForm) //returns a Conference object in GAE
         throws ConferenceException, IOException {
             if (null == sApiServiceHandler) {
@@ -140,6 +143,14 @@ public class ConferenceUtils {
             return sApiServiceHandler.createConference(conferenceForm).execute();
         }
 
+    public static BlobUrl getServingUrl() throws ConferenceException, IOException {
+        if (null == sApiServiceHandler) {
+            Log.e(TAG, "unregisterFromConference(): no service handler was built");
+            throw new ConferenceException();
+        }
+
+        return sApiServiceHandler.getBlobUrl().execute();
+    }
 
     /**
      * Returns the user {@link com.appspot.booming_order_708.conference.model.Profile}. Can
