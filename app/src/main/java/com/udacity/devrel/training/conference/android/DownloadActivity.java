@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.udacity.devrel.training.conference.android.utils.Blobs;
@@ -17,7 +19,9 @@ import java.net.URL;
 /**
  * Created by Simon on 2014/10/09.
  */
-public class DownloadActivity extends Activity {
+public class DownloadActivity extends Activity implements View.OnTouchListener {
+
+
 
     private Blobs mBlobs;
 
@@ -42,6 +46,11 @@ public class DownloadActivity extends Activity {
 
         UpLoadImage.setImageBitmap(bmp);
 
-
+    System.out.println("");
+    }
+//still to be implemented
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        return false;
     }
 }
