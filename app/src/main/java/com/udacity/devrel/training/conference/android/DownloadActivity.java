@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,36 +22,51 @@ import java.net.URL;
  */
 public class DownloadActivity extends Activity implements View.OnTouchListener {
 
-
-
-    private Blobs mBlobs;
+    ImageView mUploadImage;
+    Bitmap bmp = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.download_picture);
-        ImageView UpLoadImage = (ImageView) findViewById(R.id.downloadImgView);
-        Intent intent = getIntent();
-        mBlobs = (Blobs) intent.getSerializableExtra("blobObject");
 
-        URL url;
-        Bitmap bmp = null;
-        try {
-            url = new URL(mBlobs.getServingUrl());
-            bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        mUploadImage = (ImageView) findViewById(R.id.downloadImgView);
 
-        UpLoadImage.setImageBitmap(bmp);
-
-    System.out.println("");
+        new displayPictureAsyncTask().execute((Blobs) getIntent().getSerializableExtra("blobObject"));
     }
+
 //still to be implemented
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         return false;
     }
+
+    protected class displayPictureAsyncTask extends AsyncTask<Object, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Object... param) {
+
+            Blobs blobs = (Blobs) param[0];
+            try {
+                URL url = new URL(blobs.getServingUrl());
+                bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return false;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute (Boolean result) {
+            if (result == true) {
+                mUploadImage.setImageBitmap(bmp);
+            }
+        }
+    }
+
 }

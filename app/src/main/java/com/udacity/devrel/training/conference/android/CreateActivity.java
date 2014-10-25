@@ -107,12 +107,10 @@ public class CreateActivity extends Activity {
             @Override
             public void onClick(View view) {
 
-
-                httpclient = new DefaultHttpClient();
-
                 if (mServingUrl != null) {
                     new Thread() {
                         public void run() {
+                            httpclient = new DefaultHttpClient();
                             httppost = new HttpPost(mServingUrl);
                             FileBody fileBody = new FileBody(new File(picturePath));
 
@@ -132,23 +130,18 @@ public class CreateActivity extends Activity {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-
-
+                            Gson gson = new Gson();
+                            Blobs blobObj = gson.fromJson(response, Blobs.class);
+                            Intent intent = new Intent(mContext, DownloadActivity.class);
+                            intent.putExtra("blobObject", blobObj);
+                            startActivity(intent);
                         }
-
                     }.start();
-
-                    Gson gson = new Gson();
-                    Blobs blobObj = gson.fromJson(response, Blobs.class);
-                    Intent intent = new Intent(mContext, DownloadActivity.class);
-                    intent.putExtra("blobObject", blobObj);
-                    startActivity(intent);
                 }
                 else
                 {Toast.makeText(getApplicationContext(),"Serving URL = null. Image can't be downloaded",
                         Toast.LENGTH_LONG).show();
                 }
-
             }
         });
 
