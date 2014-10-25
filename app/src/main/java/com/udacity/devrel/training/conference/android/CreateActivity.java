@@ -58,7 +58,7 @@ public class CreateActivity extends Activity {
     HttpPost httppost;
     String response = null;
 
-    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+    //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
 
 
@@ -74,7 +74,7 @@ public class CreateActivity extends Activity {
         setContentView(R.layout.conference_create);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        StrictMode.setThreadPolicy(policy);
+        //StrictMode.setThreadPolicy(policy);
 
         mContext = this;
         mCreateButton = (TextView) findViewById(R.id.header);
@@ -107,31 +107,36 @@ public class CreateActivity extends Activity {
             @Override
             public void onClick(View view) {
 
+
                 httpclient = new DefaultHttpClient();
 
                 if (mServingUrl != null) {
+                    new Thread() {
+                        public void run() {
+                            httppost = new HttpPost(mServingUrl);
+                            FileBody fileBody = new FileBody(new File(picturePath));
 
-                    httppost = new HttpPost(mServingUrl);
-
-                    FileBody fileBody = new FileBody(new File(picturePath));
-
-                    MultipartEntity reqEntity = new MultipartEntity();
+                            MultipartEntity reqEntity = new MultipartEntity();
 
 
-                    reqEntity.addPart("file", fileBody);
+                            reqEntity.addPart("file", fileBody);
 
-                    httppost.setEntity(reqEntity);
-                    //new downloadAsyncTask().execute();
+                            httppost.setEntity(reqEntity);
+                            //new downloadAsyncTask().execute();
 
-                    try {
-                        httpResponse = httpclient.execute(httppost);
-                        response = EntityUtils.toString(httpResponse.getEntity());
-                    } catch (ClientProtocolException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                            try {
+                                httpResponse = httpclient.execute(httppost);
+                                response = EntityUtils.toString(httpResponse.getEntity());
+                            } catch (ClientProtocolException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
 
+
+                        }
+
+                    }.start();
 
                     Gson gson = new Gson();
                     Blobs blobObj = gson.fromJson(response, Blobs.class);
