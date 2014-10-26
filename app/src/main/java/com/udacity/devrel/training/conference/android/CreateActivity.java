@@ -36,6 +36,9 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -58,10 +61,6 @@ public class CreateActivity extends Activity {
     HttpPost httppost;
     String response = null;
 
-    //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-
-
-
     private final static String KEY_CITY = "city";
     private final static String KEY_NAME = "name";
     private final static String KEY_DESC = "desc";
@@ -73,8 +72,6 @@ public class CreateActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.conference_create);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
-        //StrictMode.setThreadPolicy(policy);
 
         mContext = this;
         mCreateButton = (TextView) findViewById(R.id.header);
@@ -170,39 +167,7 @@ public class CreateActivity extends Activity {
         }
     }
 
-   /** protected class downloadAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            try {
-                httpResponse = httpclient.execute(httppost);
-                response = EntityUtils.toString(httpResponse.getEntity());
-                Thread.sleep(1000);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            do {} while (result == null);
-            if (result == true) {
-                Toast.makeText(getApplicationContext(),"Downloaded",
-                        Toast.LENGTH_LONG).show();
-            }
-            if (result == false) {
-                Toast.makeText(getApplicationContext(),"Failed downloading",
-                        Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-
-**/
     protected class getServingUrlAsyncTask extends AsyncTask<Void, Void, String> {
 
         @Override
@@ -236,15 +201,20 @@ public class CreateActivity extends Activity {
             mDesc = ((EditText) findViewById(R.id.conf_desc_text)).getText().toString();
             mCity = ((EditText) findViewById(R.id.conf_city)).getText().toString();
             mMax = Integer.parseInt(((EditText) findViewById(R.id.conf_max)).getText().toString());
-            mStartDate = new Date(2014, 9, 12);
-            mEndDate = new Date(2014, 9, 20);
+            DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+            try {
+                mStartDate = dateFormat.parse("03/25/2014");
+                mEndDate = dateFormat.parse("03/26/2014");
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
             ConferenceForm conferenceForm = new ConferenceForm().
                     setCity(mCity).
                     setDescription(mDesc).
                     setName(mName).
                     setStartDate(new DateTime(mStartDate)).
-                    setEndDate(new DateTime(mStartDate)).
+                    setEndDate(new DateTime(mEndDate)).
                     setMaxAttendees(mMax);
             try {
                 ConferenceUtils.createConference(conferenceForm);
