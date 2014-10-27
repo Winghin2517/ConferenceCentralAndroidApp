@@ -52,11 +52,32 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter your Max Attendees"
+        android:hint="Enter your Max\n Attendees"
         android:id="@+id/conf_max"
         android:inputType="number"
         android:layout_weight="1"
         />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/startdate"
+            style="?android:attr/spinnerStyle"
+            android:hint="Enter start date"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?android:attr/spinnerStyle"
+            android:id="@+id/enddate"
+            android:hint="Enter end date"/>
+
     </LinearLayout>
 
     <ImageView

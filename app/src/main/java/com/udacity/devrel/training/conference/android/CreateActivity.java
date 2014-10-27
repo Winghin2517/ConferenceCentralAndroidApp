@@ -71,7 +71,9 @@ public class CreateActivity extends Activity {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.conference_create);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        //feature to implement - theHomeAsUp button
+        //getActionBar().setDisplayHomeAsUpEnabled(true);
 
         mContext = this;
         mCreateButton = (TextView) findViewById(R.id.header);
