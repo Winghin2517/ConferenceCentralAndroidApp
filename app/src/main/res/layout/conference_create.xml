@@ -67,6 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:focusable="false"
             android:id="@+id/startdate"
             style="?android:attr/spinnerStyle"
             android:hint="Enter start date"/>
@@ -74,6 +75,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:focusable="false"
+            android:clickable="false"
             style="?android:attr/spinnerStyle"
             android:id="@+id/enddate"
             android:hint="Enter end date"/>

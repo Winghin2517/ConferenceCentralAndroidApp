@@ -1,6 +1,8 @@
 package com.udacity.devrel.training.conference.android;
 
-import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.support.v4.app.DialogFragment;
+
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -8,11 +10,13 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.v4.app.FragmentActivity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,17 +43,20 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+import java.util.GregorianCalendar;
 
 
 /**
  * Created by Simon on 2014/10/01.
  */
-public class CreateActivity extends Activity {
+public class CreateActivity extends FragmentActivity implements DatePickerDialog.OnDateSetListener {
 
     //member variables
     TextView mCreateButton;
+    TextView mStartDateTextView;
+    TextView mEndDateTextView;
     String mCity, mDesc, mName = null;
     int mMax = 0;
     Date mStartDate, mEndDate;
@@ -60,7 +67,8 @@ public class CreateActivity extends Activity {
     HttpClient httpclient;
     HttpPost httppost;
     String response = null;
-
+    private static int mDateSwitch;
+    private Calendar cal;
     private final static String KEY_CITY = "city";
     private final static String KEY_NAME = "name";
     private final static String KEY_DESC = "desc";
@@ -76,6 +84,35 @@ public class CreateActivity extends Activity {
         //getActionBar().setDisplayHomeAsUpEnabled(true);
 
         mContext = this;
+
+        mEndDateTextView = (TextView) findViewById(R.id.enddate);
+
+        mEndDateTextView.setOnClickListener(new View.OnClickListener() {
+            //this class uses v4 support - so it has CreateActivity has to extend FragmentActivity
+            @Override
+            public void onClick(View view) {
+
+                android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                DialogFragment newFragment = new DatePickerDialogFragment(CreateActivity.this);
+                newFragment.show(ft, "date_tag");
+                mDateSwitch = 2;
+            }
+        });
+
+        mStartDateTextView = (TextView) findViewById(R.id.startdate);
+
+        mStartDateTextView.setOnClickListener(new View.OnClickListener() {
+            //this class uses v4 support - so it has CreateActivity has to extend FragmentActivity
+            @Override
+            public void onClick(View view) {
+
+                android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                DialogFragment newFragment = new DatePickerDialogFragment(CreateActivity.this);
+                newFragment.show(ft, "date_tag");
+                mDateSwitch = 1;
+            }
+        });
+
         mCreateButton = (TextView) findViewById(R.id.header);
         mCreateButton.setText("Create Conference");
         mCreateButton.setOnClickListener(new View.OnClickListener() {
@@ -169,6 +206,23 @@ public class CreateActivity extends Activity {
         }
     }
 
+    @Override
+    public void onDateSet(DatePicker view, int year, int monthOfYear,
+                          int dayOfMonth) {
+        cal = new GregorianCalendar(year, monthOfYear, dayOfMonth);
+        switch (mDateSwitch) {
+            case 1:
+                mStartDateTextView.setText(new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime()));
+                mStartDate = cal.getTime();
+                break;
+            case 2:
+                mEndDateTextView.setText(new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime()));
+                mEndDate = cal.getTime();
+                break;
+        }
+
+    }
+
 
     protected class getServingUrlAsyncTask extends AsyncTask<Void, Void, String> {
 
@@ -192,7 +246,6 @@ public class CreateActivity extends Activity {
                 //log results...
             }
         }
-
     }
 
     protected class createConfAsyncTask extends AsyncTask<Void, Void, Boolean> {
@@ -203,13 +256,13 @@ public class CreateActivity extends Activity {
             mDesc = ((EditText) findViewById(R.id.conf_desc_text)).getText().toString();
             mCity = ((EditText) findViewById(R.id.conf_city)).getText().toString();
             mMax = Integer.parseInt(((EditText) findViewById(R.id.conf_max)).getText().toString());
-            DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-            try {
-                mStartDate = dateFormat.parse("03/25/2014");
-                mEndDate = dateFormat.parse("03/26/2014");
+            //DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+           /** try {
+                //mStartDate = dateFormat.parse(cal.getTime());
+                //mEndDate = dateFormat.parse("03/26/2014");
             } catch (ParseException e) {
                 e.printStackTrace();
-            }
+            }**/
 
             ConferenceForm conferenceForm = new ConferenceForm().
                     setCity(mCity).
